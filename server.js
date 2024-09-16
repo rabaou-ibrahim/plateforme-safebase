@@ -1,11 +1,19 @@
-require('dotenv').config(); // Load environment variables
+require('dotenv').config();
 const fastify = require('fastify')({ logger: true });
+
 const userRoutes = require('./routes/userRoutes');
+const backupRoutes = require('./routes/backupRoutes');
+const connexionRoutes = require('./routes/connexionRoutes');
+const executionRoutes = require('./routes/executionRoutes');
+const roleRoutes = require('./routes/roleRoutes');
 
 // Register routes
 fastify.register(userRoutes);
+fastify.register(backupRoutes);
+fastify.register(connexionRoutes);
+fastify.register(executionRoutes);
+fastify.register(roleRoutes);
 
-// Start the server
 const start = async () => {
   try {
     await fastify.listen({ port: 3000 });
