@@ -1,60 +1,49 @@
-const mysql = require('mysql2');
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME
-});
+const { findAllUsers, findUserById, createUser, updateUser, deleteUser } = require('../models/userModel');
 
-connection.connect();
+exports.getAllUsers = async (req, reply) => {
+  try {
+    const users = await findAllUsers();
+    return reply.send(users);
+  } catch (err) {
+    return reply.code(500).send({ error: 'Failed to fetch users' });
+  }
+};
 
-async function getAllUsers(req, reply) {
-  connection.query('SELECT * FROM users', (error, results) => {
-    if (error) return reply.send({ status: 'failed', error: error.message });
-    reply.send(results);
-  });
-}
+exports.getUserById = async (req, reply) => {
+  try {
+    const user = await findUserById(req.params.id);
+    if (!user) {
+      return reply.code(404).send({ error: 'User not found' });
+    }
+    return reply.send(user);
+  } catch (err) {
+    return reply.code(500).send({ error: 'Failed to fetch user' });
+  }
+};
 
-async function getUserById(req, reply) {
-  const { id } = req.params;
-  connection.query('SELECT * FROM users WHERE id = ?', [id], (error, results) => {
-    if (error) return reply.send({ status: 'failed', error: error.message });
-    if (results.length === 0) return reply.code(404).send({ status: 'not found' });
-    reply.send(results[0]);
-  });
-}
+exports.createUser = async (req, reply) => {
+  try {
+    const newUser = await createUser(req.body);
+    return reply.code(201).send(newUser);
+  } catch (err) {
+    return reply.code(500).send({ error: 'Failed to create user' });
+  }
+};
 
-async function createUser(req, reply) {
-  const user = req.body;
-  connection.query('INSERT INTO users SET ?', user, (error, results) => {
-    if (error) return reply.send({ status: 'failed', error: error.message });
-    reply.code(201).send({ id: results.insertId, ...user });
-  });
-}
+exports.updateUser = async (req, reply) => {
+  try {
+    const updatedUser = await updateUser(req.params.id, req.body);
+    return reply.send(updatedUser);
+  } catch (err) {
+    return reply.code(500).send({ error: 'Failed to update user' });
+  }
+};
 
-async function updateUser(req, reply) {
-  const { id } = req.params;
-  const user = req.body;
-  connection.query('UPDATE users SET ? WHERE id = ?', [user, id], (error, results) => {
-    if (error) return reply.send({ status: 'failed', error: error.message });
-    if (results.affectedRows === 0) return reply.code(404).send({ status: 'not found' });
-    reply.send({ id, ...user });
-  });
-}
-
-async function deleteUser(req, reply) {
-  const { id } = req.params;
-  connection.query('DELETE FROM users WHERE id = ?', [id], (error, results) => {
-    if (error) return reply.send({ status: 'failed', error: error.message });
-    if (results.affectedRows === 0) return reply.code(404).send({ status: 'not found' });
-    reply.code(204).send();
-  });
-}
-
-module.exports = {
-  getAllUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser
+exports.deleteUser = async (req, reply) => {
+  try {
+    await deleteUser(req.params.id);
+    return reply.code(204).send();
+  } catch (err) {
+    return reply.code(500).send({ error: 'Failed to delete user' });
+  }
 };
