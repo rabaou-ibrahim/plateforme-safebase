@@ -7,4 +7,4 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME
 });
 
-module.exports = pool;  // Export the connection pool for reuse
+module.exports = pool; 
