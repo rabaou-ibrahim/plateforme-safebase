@@ -48,3 +48,15 @@ exports.deleteBackup = async (req, reply) => {
     return reply.code(500).send({ error: "Failed to delete Backup" });
   }
 };
+
+exports.restoreBackup = async (request, reply) => {
+  const { id } = request.params;
+  
+  try {
+    const result = await dumpService.restoreDumpService(id);
+    reply.code(200).send({ message: 'Backup restored successfully', result });
+  } catch (error) {
+    reply.code(500).send({ error: 'Failed to restore backup', details: error.message });
+  }
+};
+
