@@ -1,8 +1,6 @@
 const { exec } = require('child_process');
 const cron = require('node-cron');
 const db = require('../utils/db');
-const path = require('path');
-const fs = require('fs');
 
 exports.startDumpService = async (connexion_id) => {
   try {
@@ -51,10 +49,6 @@ exports.startDumpService = async (connexion_id) => {
     throw new Error(`Error during dump: ${error.message}`);
   }
 };
-
-
-
-
 
 // Restaurer un dump à partir d'un fichier de backup
 exports.restoreDumpService = async (backup_id) => {
