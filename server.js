@@ -1,6 +1,18 @@
 require('dotenv').config();
 const fastify = require('fastify')({ logger: true });
 const dumpService = require('./services/dumpService');
+const fastifyCookie = require('@fastify/cookie');
+const fastifySession = require('fastify-session');
+
+// Plugins pour la gestion des sessions et des cookies
+fastify.register(fastifyCookie);
+fastify.register(fastifySession, {
+  secret: 'your_very_long_super_secret_key_that_is_at_least_32_characters_long',
+  cookie: { secure: false }, // Mettre à true en production avec HTTPS
+  saveUninitialized: false,
+  resave: false,
+});
+
 
 // Importation des routes
 const userRoutes = require('./routes/userRoutes');
@@ -11,7 +23,7 @@ const roleRoutes = require('./routes/roleRoutes');
 const dumpRoutes = require('./routes/dumpRoutes');
 
 // Enregistrement des routes
-fastify.register(userRoutes);
+fastify.register(userRoutes, { prefix: '/users' }); // Préfixe pour les routes utilisateurs
 fastify.register(backupRoutes);
 fastify.register(connexionRoutes);
 fastify.register(executionRoutes);
