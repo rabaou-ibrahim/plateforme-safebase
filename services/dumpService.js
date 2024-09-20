@@ -50,30 +50,47 @@ exports.startDumpService = async (connexion_id) => {
   }
 };
 
-// Restaurer un dump à partir d'un fichier de backup
 exports.restoreDumpService = async (backup_id) => {
   try {
+    console.log('Fetching backup for ID:', backup_id);
+
+    // Récupération du backup
     const [backup] = await db.query('SELECT * FROM backup WHERE id = ?', [backup_id]);
-    const [connexion] = await db.query('SELECT * FROM connexion WHERE id = ?', [backup.connexion_id]);
+    console.log('Backup found:', backup);
+
+    // Récupération des informations de connexion
+    const [connexion] = await db.query('SELECT * FROM connexion WHERE id = ?', [backup[0].connexion_id]);
+    console.log('Connexion found:', connexion);
 
     if (!backup || !connexion) {
       throw new Error('Backup or connexion not found');
     }
 
-    const dumpFile = `../var/backups/${backup.name}_backup.sql`;
+    // Chemin du fichier dump à restaurer
+    const dumpFile = `C:/wamp64/www/plateforme-safebase/var/backups/${backup[0].name}_backup.sql`;
+    console.log('Dump file path:', dumpFile);
 
-    const command = `mysql -u ${connexion.username} -p${connexion.password} -h ${connexion.host} --port=${connexion.port} ${connexion.name} < ${dumpFile}`;
+    // Utiliser la commande "mysql" pour restaurer à partir du fichier dump dans la base de données
+    const command = connexion[0].password
+      ? `mysql -u ${connexion[0].username} -p${connexion[0].password} -h ${connexion[0].host} --port=${connexion[0].port} ${connexion[0].name} < ${dumpFile}`
+      : `mysql -u ${connexion[0].username} -h ${connexion[0].host} --port=${connexion[0].port} ${connexion[0].name} < ${dumpFile}`;
 
+    console.log('Command to execute:', command);
+
+    // Exécution de la commande pour restaurer la base de données
     return new Promise((resolve, reject) => {
       exec(command, (error, stdout, stderr) => {
         if (error) {
+          console.error('Error during restore execution:', stderr);
           reject(`Error during restore: ${stderr}`);
         } else {
+          console.log('Restore completed successfully:', stdout);
           resolve({ message: 'Database restored successfully', output: stdout });
         }
       });
     });
   } catch (error) {
+    console.error('Error in restoreDumpService:', error.message);
     throw new Error(`Error during restore: ${error.message}`);
   }
 };

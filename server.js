@@ -13,7 +13,6 @@ fastify.register(fastifySession, {
   resave: false,
 });
 
-
 // Importation des routes
 const userRoutes = require('./routes/userRoutes');
 const backupRoutes = require('./routes/backupRoutes');
@@ -34,15 +33,6 @@ fastify.register(dumpRoutes);
 const start = async () => {
   try {
     await fastify.listen({ port: 3000 });
-
-    // Restaurer
-    try {
-      await dumpService.initializeBackupSchedules();
-      console.log('Backup schedules initialized.');
-    } catch (cronError) {
-      console.error('Error initializing backup schedules:', cronError);
-    }
-
     console.log('Server running on http://localhost:3000');
   } catch (err) {
     fastify.log.error(err);

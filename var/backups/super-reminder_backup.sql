@@ -52,8 +52,8 @@ CREATE TABLE `task` (
   `id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `id_project` int NOT NULL,
   `id_user` int NOT NULL,
+  `id_project` int NOT NULL,
   `status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=109 DEFAULT CHARSET=utf32;
@@ -65,7 +65,6 @@ CREATE TABLE `task` (
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES (95,'azertyikkjn','kkkdsf',117,4,'todo'),(93,'azertyik','K',117,4,'done'),(94,'azertyikk','kkk',117,4,'done'),(83,'Super-Reminder','JS',115,4,'todo'),(86,'Portfolio','CV/Projets',115,4,'todo'),(87,'ll','ll',117,4,'done'),(88,'lll','lll',117,4,'done'),(91,'azerty','azert',117,4,'todo'),(1,'task','test',1,1,'test'),(96,'Verifier projet','JS',115,4,'done'),(97,'Verifier projetkk','JSvh',115,4,'done'),(102,'Module de Conexxion','créer un module pour pour se connecter',115,4,'done'),(101,'y-','y-y',119,4,'todo'),(103,'Test','Test2',115,4,'done'),(104,'Test456','Test456',115,4,'done'),(105,'Test4567757','Test456',115,4,'todo');
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -105,4 +104,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-20 11:35:00
+-- Dump completed on 2024-09-21  1:11:00
