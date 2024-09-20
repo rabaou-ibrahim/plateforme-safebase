@@ -35,7 +35,7 @@ const start = async () => {
   try {
     await fastify.listen({ port: 3000 });
 
-    // Initialiser les tâches CRON
+    // Restaurer
     try {
       await dumpService.initializeBackupSchedules();
       console.log('Backup schedules initialized.');
